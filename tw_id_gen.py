@@ -25,6 +25,7 @@ Github: https://github.com/opabravo
 """
 from typing import List
 from pathlib import Path
+import utils
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -73,24 +74,6 @@ def get_gender_name(gender_num: int) -> str:
     return "男生" if gender_num == 1 else "女生"
 
 
-def generate_id(gender: int, city: str, output_path: Path):
-    prefix = f"{city.upper()}{gender}"
-    with open(output_path, "a") as f:
-        for i in range(10*8):
-            id_number = f"{prefix}{i:08}"
-            if validate_id(id_number):
-                f.write(f"{id_number}\n")
-
-
-def validate_id(id_number: str) -> bool:
-    city_code = int(get_city(id_number[0])['code'])
-    be_multiplied = [city_code // 10, city_code % 10]
-    be_multiplied.extend(int(i) for i in id_number[1:])
-    to_multiply = [1, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1]
-    _sum = sum(a * b for a, b in zip(be_multiplied, to_multiply))
-    return _sum % 10 == 0
-
-
 def generate_ids(genders: List[int], cities: List[str]):
     output_path = get_output_path(cities, genders)
     if output_path.exists():
@@ -105,7 +88,8 @@ def generate_ids(genders: List[int], cities: List[str]):
         print(f"[!] 正在產生 {get_gender_name(gender)} 的身分證字號...")
         for city in cities:
             print(f"    [!] 正在產生 {get_city(city)['name']} 的身分證字號...")
-            generate_id(gender, city, output_path)
+            city_code = get_city(city)['code']
+            utils.generate_id(gender, city, int(city_code), str(output_path))
     print(f"\n[+] 完成，檔案名稱的格式為 tw_ids_<性別代號>_<戶籍地代號>，請查看 {output_path.resolve()}")
 
 def show_city_code_table():
