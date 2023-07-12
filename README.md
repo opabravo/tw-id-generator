@@ -18,7 +18,7 @@
 
 ### 1. 使用已包之裝執行檔
 
-- [下載連結]()
+- [下載連結](https://github.com/opabravo/tw-id-generator/releases/download/latest/tw_id_gen.exe)
 
 ### 2. 使用 Python 執行
 
