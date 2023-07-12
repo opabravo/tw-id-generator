@@ -23,7 +23,10 @@
 - **安裝 Python 3.6 以上版本**
 
 ```bash
-$ python3 tw_id_gen.py
+# Build c extension module
+$ python setup.py build_ext --inplace
+# Run The Script
+$ python tw_id_gen.py
 ```
 
 ## 身分證字號規律說明

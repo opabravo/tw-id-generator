@@ -25,9 +25,15 @@ Github: https://github.com/opabravo
 """
 from typing import List
 from pathlib import Path
+import utils
+import sys
 
 
-BASE_DIR = Path(__file__).resolve().parent
+# Get correct file path if running from frozen EXE
+if getattr(sys, 'frozen', False):
+    BASE_DIR = Path(sys.executable).parent
+else:
+    BASE_DIR = Path(__file__).parent
 
 # "L": "台中縣", "R": "台南縣", "S": "高雄縣", "Y": "陽明山管理局" has been removed
 CITY_CODE_MAPPING = {
@@ -55,6 +61,7 @@ CITY_CODE_MAPPING = {
     'Z': {'name': '連江縣', 'code': '33'}
 }
 
+
 def get_output_path(cities: List[str], genders: List[int]) -> Path:
     filename = f'tw_ids_{"".join(map(str, genders))}_{"".join(cities)}.txt'
     output_path = BASE_DIR / "output" / f"{filename}"
@@ -64,31 +71,13 @@ def get_output_path(cities: List[str], genders: List[int]) -> Path:
     return BASE_DIR / "output" / f"{filename}"
 
 
-def get_city(city:str):
+def get_city(city: str):
     """Get city object"""
     return CITY_CODE_MAPPING.get(city.upper())
 
 
 def get_gender_name(gender_num: int) -> str:
     return "男生" if gender_num == 1 else "女生"
-
-
-def generate_id(gender: int, city: str, output_path: Path):
-    prefix = f"{city.upper()}{gender}"
-    with open(output_path, "a") as f:
-        for i in range(10*8):
-            id_number = f"{prefix}{i:08}"
-            if validate_id(id_number):
-                f.write(f"{id_number}\n")
-
-
-def validate_id(id_number: str) -> bool:
-    city_code = int(get_city(id_number[0])['code'])
-    be_multiplied = [city_code // 10, city_code % 10]
-    be_multiplied.extend(int(i) for i in id_number[1:])
-    to_multiply = [1, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1]
-    _sum = sum(a * b for a, b in zip(be_multiplied, to_multiply))
-    return _sum % 10 == 0
 
 
 def generate_ids(genders: List[int], cities: List[str]):
@@ -100,13 +89,16 @@ def generate_ids(genders: List[int], cities: List[str]):
         output_path.unlink()
 
     print(f"\n[!] 正在產生身分證字號到 {output_path.resolve()}")
-    
+
     for gender in genders:
         print(f"[!] 正在產生 {get_gender_name(gender)} 的身分證字號...")
         for city in cities:
             print(f"    [!] 正在產生 {get_city(city)['name']} 的身分證字號...")
-            generate_id(gender, city, output_path)
-    print(f"\n[+] 完成，檔案名稱的格式為 tw_ids_<性別代號>_<戶籍地代號>，請查看 {output_path.resolve()}")
+            city_code = get_city(city)['code']
+            utils.generate_id(gender, city, int(city_code), str(output_path))
+    print(
+        f"\n[+] 完成，檔案名稱的格式為 tw_ids_<性別代號>_<戶籍地代號>，請查看 {output_path.resolve()}")
+
 
 def show_city_code_table():
     print("城市代碼表\n----------")
@@ -132,7 +124,6 @@ def main():
     print(f"戶籍 => {cities_parsed}\n")
 
     generate_ids(genders, cities)
-    
 
 
 if __name__ == '__main__':
