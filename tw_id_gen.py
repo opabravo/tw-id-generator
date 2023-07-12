@@ -26,9 +26,14 @@ Github: https://github.com/opabravo
 from typing import List
 from pathlib import Path
 import utils
+import sys
 
 
-BASE_DIR = Path(__file__).resolve().parent
+# Get correct file path if running from frozen EXE
+if getattr(sys, 'frozen', False):
+    BASE_DIR = Path(sys.executable).parent
+else:
+    BASE_DIR = Path(__file__).parent
 
 # "L": "台中縣", "R": "台南縣", "S": "高雄縣", "Y": "陽明山管理局" has been removed
 CITY_CODE_MAPPING = {
