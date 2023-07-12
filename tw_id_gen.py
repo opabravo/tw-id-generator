@@ -1,5 +1,5 @@
 """
-Github: https://github.com/opabravo
+Github: https://github.com/opabravo/tw-id-generator
 
 ## 功能
 
@@ -105,6 +105,17 @@ def show_city_code_table():
     for k, v in CITY_CODE_MAPPING.items():
         print(f"{k} : {v['name']}")
     print("----------\n")
+    
+def show_banner():
+    print("""
+----------------------------------------------------
+台灣身份證字號字典生成/產生器
+
+Github - https://github.com/opabravo/tw-id-generator
+----------------------------------------------------
+
+"""
+    )
 
 
 def main():
