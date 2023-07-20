@@ -16,13 +16,13 @@
 
 ## 使用方法
 
-### 1. 使用已包之裝執行檔
+### 1. 使用已包裝之執行檔
 
 - [下載連結](https://github.com/opabravo/tw-id-generator/releases/download/latest/tw_id_gen.exe)
 
 ### 2. 使用 Python 執行
 
-- **安裝 Python 3.6 以上版本**
+- 安裝 Python 3.6 以上版本
 
 ```bash
 # Build c extension module
